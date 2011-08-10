@@ -38,4 +38,24 @@ describe RubyFtk do
     end
   end
   
+  context "extract file description" do
+    before(:all) do
+      @report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
+      @r = RubyFtk.new(:ftk_report => @report)
+    end
+    
+    it "knows how many files are represented" do
+      @r.file_count.should eql(56)
+    end
+    
+    it "knows the file name of each file" do
+      @r.files["NATHIN32_52007"][:filename].should eql("NATHIN32")
+      @r.files["NATHIN32_52007"][:id].should eql("52007")
+    end
+    
+    it "knows the size of each file" do
+      @r.files["NATHIN32_52007"][:filesize].should eql("37180 B")
+    end
+  end
+  
 end
