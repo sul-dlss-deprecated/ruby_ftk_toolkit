@@ -32,6 +32,10 @@ describe RubyFtk do
     it "can extract the collection call number" do
       @r.call_number.should eql("M1437")
     end
+    
+    it "can extract the series information" do
+      @r.series.should eql("Series 6: Born Digital Materials")
+    end
   end
   
 end
