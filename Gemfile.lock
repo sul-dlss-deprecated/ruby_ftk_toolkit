@@ -4,6 +4,7 @@ PATH
     ruby_ftk (0.0.1)
       logger
       mediashelf-loggable
+      nokogiri
 
 GEM
   remote: http://rubygems.org/
@@ -15,6 +16,7 @@ GEM
     logger (1.2.8)
     mediashelf-loggable (0.4.7)
     mocha (0.9.12)
+    nokogiri (1.5.0)
     rack (1.3.2)
     rbx-require-relative (0.0.5)
     rcov (0.9.10)

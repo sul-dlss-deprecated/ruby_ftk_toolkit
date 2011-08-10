@@ -17,7 +17,21 @@ describe RubyFtk do
       r = RubyFtk.new(:ftk_report => fixture_location)
       r.ftk_report.should eql(fixture_location)
     end
+  end
+  
+  context "extract collection level values" do
+    before(:all) do
+      @report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
+      @r = RubyFtk.new(:ftk_report => @report)
+    end
     
+    it "can extract the collection title" do
+      @r.collection_title.should eql("Stephen Jay Gould papers")
+    end
+    
+    it "can extract the collection call number" do
+      @r.call_number.should eql("M1437")
+    end
   end
   
 end
