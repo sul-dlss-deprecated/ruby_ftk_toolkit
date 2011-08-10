@@ -45,8 +45,15 @@ class RubyFtk
       id = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Item Number']]/fo:table-cell[2]/fo:block/text()").to_s
       unique_combo = "#{filename}_#{id}"
       filesize = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Logical Size']]/fo:table-cell[2]/fo:block/text()").to_s
+      filetype = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='File Type']]/fo:table-cell[2]/fo:block/text()").to_s
+      filepath = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Path']]/fo:table-cell[2]/fo:block/text()").to_s
       
-      @files[unique_combo] = {:id => id, :filename => filename, :filesize => filesize}
+      @files[unique_combo] = {:id => id, 
+        :filename => filename, 
+        :filesize => filesize,
+        :filetype => filetype,
+        :filepath => filepath
+        }
     end
   end
   

@@ -56,6 +56,14 @@ describe RubyFtk do
     it "knows the size of each file" do
       @r.files["NATHIN32_52007"][:filesize].should eql("37180 B")
     end
+    
+    it "knows the filetype of each file" do
+      @r.files["NATHIN32_52007"][:filetype].should eql("WordPerfect 5.1")
+    end
+    
+    it "knows the filepath of each file" do
+      @r.files["NATHIN32_52007"][:filepath].should eql("CM117.001/NONAME [FAT12]/[root]/NATHIN32")
+    end
   end
   
 end
