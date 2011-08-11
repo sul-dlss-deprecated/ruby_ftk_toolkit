@@ -1,15 +1,29 @@
 require 'nokogiri'
+require 'active-fedora'
 
 class RubyFtk
   
   attr_accessor :ftk_report       # The location of the ftk xml file we're processing
-  attr_accessor :collection_title # The name of the collection
-  attr_accessor :call_number      # The call number of the collection
-  attr_accessor :series           # The series
-  attr_accessor :file_count       # The number of files described by this FTK report
-  attr_accessor :files            # A Hash of all the file descriptions
+  attr_reader :collection_title # The name of the collection
+  attr_reader :call_number      # The call number of the collection
+  attr_reader :series           # The series
+  attr_reader :file_count       # The number of files described by this FTK report
+  attr_reader :files            # A Hash of all the file descriptions
   
+  # Initialize an FTK object. 
+  # If you don't pass in any arguments, it won't do anything, and you'll need to manually set the FTK report location and run
+  # "process_ftk_report" yourself.
+  # For fastest processing, pass the location of the ftk report in at initialization time
+  # @example instantiating with an FTK report
+  #  r = RubyFtk.new(:ftk_report => "/path/to/FTK_report.xml")
   def initialize(args = {})
+    
+    if args[:fedora_config]
+      ActiveFedora.init(args[:fedora_config])
+    else
+      ActiveFedora.init
+    end
+    
     if args[:ftk_report]
       raise "Can't find file #{args[:ftk_report]}" unless File.file? args[:ftk_report]
       @ftk_report = args[:ftk_report]

@@ -17,6 +17,11 @@ describe RubyFtk do
       r = RubyFtk.new(:ftk_report => fixture_location)
       r.ftk_report.should eql(fixture_location)
     end
+    it "can accept a fedora url as an argument and intialize a connection to fedora" do
+      fedora_config = File.join(File.dirname(__FILE__), "/../config/fedora.yml")
+      hfo = RubyFtk.new(:fedora_config => fedora_config)
+      Fedora::Repository.instance.fedora_version.should eql("3.4.2")
+    end
   end
   
   context "extract collection level values" do
