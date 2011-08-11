@@ -64,6 +64,24 @@ describe RubyFtk do
     it "knows the filepath of each file" do
       @r.files["NATHIN32_52007"][:filepath].should eql("CM117.001/NONAME [FAT12]/[root]/NATHIN32")
     end
+    
+    it "knows the disk image number of each file" do
+      @r.files["NATHIN32_52007"][:disk_image_number].should eql("CM117")
+    end
+    
+    it "knows the file creation date of each file" do
+      @r.files["NATHIN32_52007"][:file_creation_date].should eql("n/a")
+      @r.files["gould_407_linages_10_characters.txt_30005"][:file_creation_date].should eql("7/23/2010 2:47:38 PM (2010-07-23 21:47:38 UTC)")
+    end
+    
+    it "knows the file accessed date of each file" do
+      @r.files["gould_407_linages_10_characters.txt_30005"][:file_accessed_date].should eql("9/1/2010 1:43:58 PM (2010-09-01 20:43:58 UTC)")
+    end
+    
+    it "knows the file modified date of each file" do
+      @r.files["gould_407_linages_10_characters.txt_30005"][:file_modified_date].should eql("9/24/2008 5:52:37 AM (2008-09-24 12:52:37 UTC)")
+    end
+    
   end
   
 end

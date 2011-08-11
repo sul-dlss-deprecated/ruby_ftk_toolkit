@@ -47,12 +47,21 @@ class RubyFtk
       filesize = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Logical Size']]/fo:table-cell[2]/fo:block/text()").to_s
       filetype = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='File Type']]/fo:table-cell[2]/fo:block/text()").to_s
       filepath = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Path']]/fo:table-cell[2]/fo:block/text()").to_s
+      disk_image_number = filepath.slice(0,5)
+      file_creation_date = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Created Date']]/fo:table-cell[2]/fo:block/text()").to_s
+      file_accessed_date = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Accessed Date']]/fo:table-cell[2]/fo:block/text()").to_s
+      file_modified_date = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Modified Date']]/fo:table-cell[2]/fo:block/text()").to_s
+      
       
       @files[unique_combo] = {:id => id, 
         :filename => filename, 
         :filesize => filesize,
         :filetype => filetype,
-        :filepath => filepath
+        :filepath => filepath,
+        :disk_image_number => disk_image_number,
+        :file_creation_date => file_creation_date,
+        :file_accessed_date => file_accessed_date,
+        :file_modified_date => file_modified_date
         }
     end
   end
