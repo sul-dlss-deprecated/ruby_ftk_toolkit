@@ -106,8 +106,10 @@ describe RubyFtk do
     end
     
     it "knows whether this is a duplicate file" do
-      pending "Waiting on Peter to get back to me"
-      @r.files["gould_407_linages_10_characters.txt_30005"][:duplicate].should eql("False")
+      @r.files["gould_407_linages_10_characters.txt_30005"][:duplicate].should eql(" ")
+      @r.files["SJG&amp;BR.W50_111004"][:duplicate].should eql("M")
+      @r.files["SJG&amp;BR.W50_118007"][:duplicate].should eql("D")
+      
     end
     
   end
