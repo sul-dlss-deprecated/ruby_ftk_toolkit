@@ -2,8 +2,11 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require File.join(File.dirname(__FILE__), "/../../lib/ftk_file")
 require File.join(File.dirname(__FILE__), "/../../lib/ftk_processor")
 require File.join(File.dirname(__FILE__), "/../../lib/hypatia_file_object_assembler")
+require File.join(File.dirname(__FILE__), "/../factories/ftk_files.rb")
+
 require 'rubygems'
 require 'ruby-debug'
+require 'factory_girl'
 
 describe HypatiaFileObjectAssembler do
   before(:all) do
@@ -21,7 +24,18 @@ describe HypatiaFileObjectAssembler do
     end
     it "processes an FTK report" do
       hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
+      hfo.expects(:create_bag).at_least(56).returns(nil)
       hfo.process(@ftk_report)
+    end
+  end
+  
+  context "creating bags" do
+    before(:all) do
+      @ff = FactoryGirl.build(:ftk_file)
+    end
+    it "creates a descMetadata file" do
+      puts @ff.class
+      puts @ff.filename
     end
   end
 end

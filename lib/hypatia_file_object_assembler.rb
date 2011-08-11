@@ -18,10 +18,17 @@ class HypatiaFileObjectAssembler
   def process(ftk_report)
     @logger.debug "ftk report = #{ftk_report}"
     @ftk_processor = FtkProcessor.new(:ftk_report => ftk_report, :logfile => @logger)
-    @logger.debug @ftk_processor.ftk_report
     @ftk_processor.files.each do |ftk_file|
-      @logger.debug ftk_file.class
+      create_bag(ftk_file[1])
     end
+  end
+  
+  # WHAT_DOES_THIS_METHOD_DO?
+  # @param
+  # @return
+  # @example
+  def create_bag
+    
   end
   
 end

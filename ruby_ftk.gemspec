@@ -29,7 +29,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "ruby-debug"
   s.add_development_dependency "ruby-debug-base"
   s.add_development_dependency "rspec", "< 2.0" # We're not ready to upgrade to rspec 2
-  s.add_development_dependency 'rspec-rails', '<2.0.0' # rspec-rails 2.0.0 requires Rails 3.
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'rcov'
   
@@ -38,6 +37,7 @@ Gem::Specification.new do |s|
                                                 # debug it right now
   
   s.add_development_dependency 'RedCloth'
+  s.add_development_dependency "factory_girl", "~> 2.0.0"
   
 end
 
