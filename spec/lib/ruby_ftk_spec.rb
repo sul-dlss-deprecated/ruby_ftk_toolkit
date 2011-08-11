@@ -82,6 +82,13 @@ describe RubyFtk do
       @r.files["gould_407_linages_10_characters.txt_30005"][:file_modified_date].should eql("9/24/2008 5:52:37 AM (2008-09-24 12:52:37 UTC)")
     end
     
+    it "knows the labels for each file" do      
+      @r.files["gould_407_linages_10_characters.txt_30005"][:access_rights].should eql("Public")
+      @r.files["gould_407_linages_10_characters.txt_30005"][:medium].should eql("Punch Cards")
+      @r.files["BUR4-2_157003"][:title].should eql("The Burgess Shale and the Nature of History")
+      @r.files["BUR4-2_157003"][:medium].should eql("5.25 inch Floppy Disks")
+    end
+    
   end
   
 end

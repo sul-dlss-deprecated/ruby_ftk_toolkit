@@ -52,7 +52,6 @@ class RubyFtk
       file_accessed_date = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Accessed Date']]/fo:table-cell[2]/fo:block/text()").to_s
       file_modified_date = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Modified Date']]/fo:table-cell[2]/fo:block/text()").to_s
       
-      
       @files[unique_combo] = {:id => id, 
         :filename => filename, 
         :filesize => filesize,
@@ -63,6 +62,23 @@ class RubyFtk
         :file_accessed_date => file_accessed_date,
         :file_modified_date => file_modified_date
         }
+      getLabels(node,unique_combo)
+      
+    end
+  end
+  
+  # Extract the labels attached to a file and split them apart
+  # The FTK report stores them like this:
+  # [access_rights]Public,[medium]3.5 inch Floppy Disks,[type]Natural History Magazine Column 
+  # @param [Nokogiri::XML::Element] node
+  # @param [String] unique_combo the Hash key for each file
+  def getLabels(node, unique_combo)
+    label_hash = {}
+    labels = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Label']]/fo:table-cell[2]/fo:block/text()").to_s
+    labels.split(',[').each do |pair|
+      key = pair.split(']')[0].gsub('[','')
+      value = pair.split(']')[1].strip
+      @files[unique_combo][key.to_sym] = value # Add these values to the hash directly
     end
   end
   
