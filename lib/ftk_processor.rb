@@ -17,6 +17,7 @@ class FtkProcessor
   # @example instantiating with an FTK report
   #  r = FtkProcessor.new(:ftk_report => "/path/to/FTK_report.xml")
   def initialize(args = {})
+    @files = {}
     
     if args[:fedora_config]
       ActiveFedora.init(args[:fedora_config])
@@ -41,7 +42,6 @@ class FtkProcessor
   # Extract data from the ftk xml report
   def process_ftk_report
     @logger.debug("Processing FTK report #{@ftk_report}")
-    @files = {}
     get_title_and_call_number
     get_series
     get_file_descriptions
@@ -62,59 +62,64 @@ class FtkProcessor
     file_array = @doc.xpath("//fo:table-body[fo:table-row/fo:table-cell/fo:block[text()='File Comments']]")
     @file_count = file_array.length
     file_array.each do |node|
-      
-      ff = FtkFile.new
-      ff.filename = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Name']]/fo:table-cell[2]/fo:block/text()").to_s
-      ff.id = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Item Number']]/fo:table-cell[2]/fo:block/text()").to_s
-      ff.unique_combo = "#{ff.filename}_#{ff.id}"  
-      ff.filesize = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Logical Size']]/fo:table-cell[2]/fo:block/text()").to_s
-      ff.filetype = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='File Type']]/fo:table-cell[2]/fo:block/text()").to_s
-      ff.filepath = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Path']]/fo:table-cell[2]/fo:block/text()").to_s
-      ff.disk_image_number = ff.filepath.slice(0,5)
-      ff.file_creation_date = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Created Date']]/fo:table-cell[2]/fo:block/text()").to_s
-      ff.file_accessed_date = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Accessed Date']]/fo:table-cell[2]/fo:block/text()").to_s
-      ff.file_modified_date = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Modified Date']]/fo:table-cell[2]/fo:block/text()").to_s
-      
-      getLabels(node,ff)
-      getMd5(node,ff)
-      getSha1(node,ff)
-      getExportPath(node,ff)
-      getRestricted(node,ff)
-      getDuplicate(node,ff)
-      @files[ff.unique_combo] = ff
+      process_node(node)
     end
   end
   
+  # Process a single file description node
+  # @param [Nokogiri::XML::Node]
+  def process_node(node)
+    ff = FtkFile.new
+    ff.filename = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Name']]/fo:table-cell[2]/fo:block/text()").to_s
+    ff.id = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Item Number']]/fo:table-cell[2]/fo:block/text()").to_s
+    ff.unique_combo = "#{ff.filename}_#{ff.id}"  
+    ff.filesize = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Logical Size']]/fo:table-cell[2]/fo:block/text()").to_s
+    ff.filetype = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='File Type']]/fo:table-cell[2]/fo:block/text()").to_s
+    ff.filepath = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Path']]/fo:table-cell[2]/fo:block/text()").to_s
+    ff.disk_image_number = ff.filepath.slice(0,5)
+    ff.file_creation_date = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Created Date']]/fo:table-cell[2]/fo:block/text()").to_s
+    ff.file_accessed_date = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Accessed Date']]/fo:table-cell[2]/fo:block/text()").to_s
+    ff.file_modified_date = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Modified Date']]/fo:table-cell[2]/fo:block/text()").to_s
+    
+    getLabels(node,ff)
+    getMd5(node,ff)
+    getSha1(node,ff)
+    getExportPath(node,ff)
+    getRestricted(node,ff)
+    getDuplicate(node,ff)
+    @files[ff.unique_combo] = ff
+  end
+  
   # Is this a duplicate file? 
-  # @param [Nokogiri::XML::Element] node
+  # @param [Nokogiri::XML::Node] node
   # @param [FtkFile] The FtkFile object to which to add values 
   def getDuplicate(node,ff)
     ff.duplicate = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Duplicate File']]/fo:table-cell[2]/fo:block/text()").to_s
   end
   
   # Extract the export path for a given file
-  # @param [Nokogiri::XML::Element] node
+  # @param [Nokogiri::XML::Node] node
   # @param [FtkFile] The FtkFile object to which to add values 
   def getRestricted(node,ff)
     ff.restricted = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Flagged Privileged']]/fo:table-cell[2]/fo:block/text()").to_s
   end
   
   # Extract the export path for a given file
-  # @param [Nokogiri::XML::Element] node
+  # @param [Nokogiri::XML::Node] node
   # @param [FtkFile] The FtkFile object to which to add values 
   def getExportPath(node,ff)
     ff.export_path = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Exported as']]/fo:table-cell[2]/fo:block/fo:basic-link/@external-destination").to_s
   end
   
   # Extract the md5 checksum for a given file
-  # @param [Nokogiri::XML::Element] node
+  # @param [Nokogiri::XML::Node] node
   # @param [FtkFile] The FtkFile object to which to add values 
   def getMd5(node,ff)
     ff.md5 = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='MD5 Hash']]/fo:table-cell[2]/fo:block/text()").to_s
   end
   
   # Extract the sha1 checksum for a given file
-  # @param [Nokogiri::XML::Element] node
+  # @param [Nokogiri::XML::Node] node
   # @param [FtkFile] The FtkFile object to which to add values 
   def getSha1(node,ff)
     ff.sha1 = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='SHA1 Hash']]/fo:table-cell[2]/fo:block/text()").to_s
@@ -123,7 +128,7 @@ class FtkProcessor
   # Extract the labels attached to a file and split them apart
   # The FTK report stores them like this:
   # [access_rights]Public,[medium]3.5 inch Floppy Disks,[type]Natural History Magazine Column 
-  # @param [Nokogiri::XML::Element] node
+  # @param [Nokogiri::XML::Node] node
   # @param [FtkFile] The FtkFile object to which to add values 
   def getLabels(node, ff)
     label_hash = {}

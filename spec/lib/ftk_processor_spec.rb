@@ -44,7 +44,19 @@ describe FtkProcessor do
     end
   end
   
-  context "file description hash" do
+  # context "process a single file" do
+  #   before(:all) do
+  #     snip = File.join(File.dirname(__FILE__), "/../fixtures/file_snip.xml")
+  #     @doc = Nokogiri::XML(File.open(snip))
+  #   end
+  #   it "can process a single node" do
+  #     fp = FtkProcessor.new()
+  #     ff = fp.process_node(@doc.xpath("/fo:"))
+  #     puts ff.inspect
+  #   end
+  # end
+  
+  context "file description" do
     before(:all) do
       @report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
       @r = FtkProcessor.new(:ftk_report => @report)
