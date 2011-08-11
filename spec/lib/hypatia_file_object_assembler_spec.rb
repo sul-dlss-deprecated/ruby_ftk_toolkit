@@ -32,8 +32,11 @@ describe HypatiaFileObjectAssembler do
   context "creating bags" do
     before(:all) do
       @ff = FactoryGirl.build(:ftk_file)
+      @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
     end
     it "creates a descMetadata file" do
+      pending
+      dm = @hfo.buildDescMetadata
       puts @ff.class
       puts @ff.filename
     end
