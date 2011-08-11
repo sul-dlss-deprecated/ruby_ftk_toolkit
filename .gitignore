@@ -1,2 +1,4 @@
 coverage.data
 coverage/
+doc/
+.yardoc
