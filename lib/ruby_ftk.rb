@@ -63,8 +63,47 @@ class RubyFtk
         :file_modified_date => file_modified_date
         }
       getLabels(node,unique_combo)
-      
+      getMd5(node,unique_combo)
+      getSha1(node,unique_combo)
+      getExportPath(node,unique_combo)
+      getRestricted(node,unique_combo)
+      getDuplicate(node,unique_combo)
     end
+  end
+  
+  # Is this a duplicate file? 
+  # @param [Nokogiri::XML::Element] node
+  # @param [String] unique_combo the Hash key for each file
+  def getDuplicate(node,unique_combo)
+    @files[unique_combo][:duplicate] = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Duplicate File']]/fo:table-cell[2]/fo:block/text()").to_s
+  end
+  
+  # Extract the export path for a given file
+  # @param [Nokogiri::XML::Element] node
+  # @param [String] unique_combo the Hash key for each file
+  def getRestricted(node,unique_combo)
+    @files[unique_combo][:restricted] = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Flagged Privileged']]/fo:table-cell[2]/fo:block/text()").to_s
+  end
+  
+  # Extract the export path for a given file
+  # @param [Nokogiri::XML::Element] node
+  # @param [String] unique_combo the Hash key for each file
+  def getExportPath(node,unique_combo)
+    @files[unique_combo][:export_path] = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='Exported as']]/fo:table-cell[2]/fo:block/fo:basic-link/@external-destination").to_s
+  end
+  
+  # Extract the md5 checksum for a given file
+  # @param [Nokogiri::XML::Element] node
+  # @param [String] unique_combo the Hash key for each file
+  def getMd5(node,unique_combo)
+    @files[unique_combo][:md5] = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='MD5 Hash']]/fo:table-cell[2]/fo:block/text()").to_s
+  end
+  
+  # Extract the sha1 checksum for a given file
+  # @param [Nokogiri::XML::Element] node
+  # @param [String] unique_combo the Hash key for each file
+  def getSha1(node,unique_combo)
+    @files[unique_combo][:sha1] = node.xpath("fo:table-row[fo:table-cell/fo:block[text()='SHA1 Hash']]/fo:table-cell[2]/fo:block/text()").to_s
   end
   
   # Extract the labels attached to a file and split them apart
