@@ -1,25 +1,25 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require File.join(File.dirname(__FILE__), "/../../lib/ruby_ftk")
+require File.join(File.dirname(__FILE__), "/../../lib/ftk_processor")
 require 'rubygems'
 require 'ruby-debug'
 
 
-describe RubyFtk do
+describe FtkProcessor do
   
   context "basic behavior" do
     it "can instantiate" do
-      r = RubyFtk.new
-      r.class.should eql(RubyFtk)
+      r = FtkProcessor.new
+      r.class.should eql(FtkProcessor)
     end
     
     it "can accept an FTK XML report as input" do
       fixture_location = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
-      r = RubyFtk.new(:ftk_report => fixture_location)
+      r = FtkProcessor.new(:ftk_report => fixture_location)
       r.ftk_report.should eql(fixture_location)
     end
     it "can accept a fedora url as an argument and intialize a connection to fedora" do
       fedora_config = File.join(File.dirname(__FILE__), "/../config/fedora.yml")
-      hfo = RubyFtk.new(:fedora_config => fedora_config)
+      hfo = FtkProcessor.new(:fedora_config => fedora_config)
       Fedora::Repository.instance.fedora_version.should eql("3.4.2")
     end
   end
@@ -27,7 +27,7 @@ describe RubyFtk do
   context "extract collection level values" do
     before(:all) do
       @report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
-      @r = RubyFtk.new(:ftk_report => @report)
+      @r = FtkProcessor.new(:ftk_report => @report)
     end
     
     it "can extract the collection title" do
@@ -46,7 +46,7 @@ describe RubyFtk do
   context "file description hash" do
     before(:all) do
       @report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
-      @r = RubyFtk.new(:ftk_report => @report)
+      @r = FtkProcessor.new(:ftk_report => @report)
     end
     
     it "knows how many files are represented" do

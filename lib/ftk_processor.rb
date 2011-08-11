@@ -1,7 +1,7 @@
 require 'nokogiri'
 require 'active-fedora'
 
-class RubyFtk
+class FtkProcessor
   
   attr_accessor :ftk_report       # The location of the ftk xml file we're processing
   attr_reader :collection_title # The name of the collection
@@ -15,7 +15,7 @@ class RubyFtk
   # "process_ftk_report" yourself.
   # For fastest processing, pass the location of the ftk report in at initialization time
   # @example instantiating with an FTK report
-  #  r = RubyFtk.new(:ftk_report => "/path/to/FTK_report.xml")
+  #  r = FtkProcessor.new(:ftk_report => "/path/to/FTK_report.xml")
   def initialize(args = {})
     
     if args[:fedora_config]
