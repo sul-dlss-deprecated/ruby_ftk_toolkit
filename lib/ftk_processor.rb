@@ -24,6 +24,12 @@ class FtkProcessor
       ActiveFedora.init
     end
     
+    if args[:logfile]
+      @logger = args[:logfile]
+    else
+      @logger = Logger.new('logs/ftk_processor.log')
+    end
+    
     if args[:ftk_report]
       raise "Can't find file #{args[:ftk_report]}" unless File.file? args[:ftk_report]
       @ftk_report = args[:ftk_report]
@@ -34,6 +40,7 @@ class FtkProcessor
   
   # Extract data from the ftk xml report
   def process_ftk_report
+    @logger.debug("Processing FTK report #{@ftk_report}")
     @files = {}
     get_title_and_call_number
     get_series

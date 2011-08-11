@@ -1,5 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require File.join(File.dirname(__FILE__), "/../../lib/ftk_file")
+require File.join(File.dirname(__FILE__), "/../../lib/ftk_processor")
 require File.join(File.dirname(__FILE__), "/../../lib/hypatia_file_object_assembler")
 require 'rubygems'
 require 'ruby-debug'
@@ -20,7 +21,7 @@ describe HypatiaFileObjectAssembler do
     end
     it "processes an FTK report" do
       hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
-      hfo.process(@fixture_location)
+      hfo.process(@ftk_report)
     end
   end
 end
