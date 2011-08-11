@@ -11,10 +11,11 @@ describe FtkFile do
     end
     it "responds to all of the fields a file object needs" do
       hfo = FtkFile.new
+      # ff.send("#{key}=".to_sym, value)
       
       fields = [:filename=,:id=,:filesize=,:filetype=,:filepath=,:disk_image_number=,
           :file_creation_date=,:file_accessed_date=,:file_modified_date=,:medium=,:title=,
-          :access_rights=,:duplicate=,:restricted=,:md5=,:sha1=,:export_path=]
+          :access_rights=,:duplicate=,:restricted=,:md5=,:sha1=,:export_path=,:unique_combo=,:type=]
       fields.each do |field|
         hfo.send(field,"foo").should eql("foo")
       end

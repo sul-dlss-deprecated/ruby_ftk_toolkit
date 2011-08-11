@@ -5,6 +5,7 @@ class FtkFile
   
   attr_accessor :filename             # The filename of the file. Not necessarily unique. 
   attr_accessor :id                   # The id number assigned by FTK
+  attr_accessor :unique_combo         # The combination of the filename and the id ensures a unique identifier for the file
   attr_accessor :filesize             # The size of the file
   attr_accessor :filetype             # The type of the file (e.g., "WordPerfect 5.1")
   attr_accessor :filepath             # The path of the file when FTK processed it (e.g., "CM117.001/NONAME [FAT12]/[root]/NATHIN32")
@@ -14,6 +15,7 @@ class FtkFile
   attr_accessor :file_modified_date   # The file's last modified date, as reported by FTK
   attr_accessor :medium               # The medium of the file's storage (e.g., "5.25 inch Floppy Disks")
   attr_accessor :title                # The file's title, if known (e.g., "The Burgess Shale and the Nature of History")
+  attr_accessor :type                 # The type of file, if known (e.g., "Journal Article")
   attr_accessor :access_rights        # The access rights for the file (e.g., "Public")
   attr_accessor :duplicate            # Did FTK determine that this was a duplicate file? Duplicate files are detected
                                       # by comparing their checksums. If a duplicate is discovered, the first file that
