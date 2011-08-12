@@ -35,15 +35,13 @@ describe HypatiaFileObjectAssembler do
       @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
     end
     it "creates a descMetadata file" do
-      dm = @hfo.buildDescMetadata(@ff)
-      doc = Nokogiri::XML(dm)
+      doc = Nokogiri::XML(@hfo.buildDescMetadata(@ff))
       doc.xpath("/mods:mods/mods:titleInfo/mods:title/text()").to_s.should eql(@ff.title)
       doc.xpath("/mods:mods/mods:typeOfResource/text()").to_s.should eql(@ff.type)
       doc.xpath("/mods:mods/mods:physicalDescription/mods:form/text()").to_s.should eql(@ff.medium)
     end
     it "creates a contentMetadata file" do
-      cm = @hfo.buildContentMetadata(@ff)
-      doc = Nokogiri::XML(cm)
+      doc = Nokogiri::XML(@hfo.buildContentMetadata(@ff))
       doc.xpath("/contentMetadata/@type").to_s.should eql("born-digital")
       doc.xpath("/contentMetadata/@objectId").to_s.should eql(@ff.unique_combo)
       doc.xpath("/contentMetadata/resource/@type").to_s.should eql("analysis")
@@ -55,8 +53,7 @@ describe HypatiaFileObjectAssembler do
       doc.xpath("/contentMetadata/resource/file/checksum[@type='sha1']/text()").to_s.should eql(@ff.sha1)
     end
     it "creates a rightsMetdata file" do
-      rm = @hfo.buildRightsMetadata(@ff)
-      doc = Nokogiri::XML(rm)
+      doc = Nokogiri::XML(@hfo.buildRightsMetadata(@ff))
       doc.xpath("/xmlns:rightsMetadata/xmlns:access[@type='discover']/xmlns:machine/xmlns:group/text()").to_s.should eql(@ff.access_rights.downcase)
       doc.xpath("/xmlns:rightsMetadata/xmlns:access[@type='read']/xmlns:machine/xmlns:group/text()").to_s.should eql(@ff.access_rights.downcase)
     end
