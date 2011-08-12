@@ -55,10 +55,10 @@ describe HypatiaFileObjectAssembler do
       doc.xpath("/contentMetadata/resource/file/checksum[@type='sha1']/text()").to_s.should eql(@ff.sha1)
     end
     it "creates a rightsMetdata file" do
-      pending
       rm = @hfo.buildRightsMetadata(@ff)
       doc = Nokogiri::XML(rm)
-      
+      doc.xpath("/xmlns:rightsMetadata/xmlns:access[@type='discover']/xmlns:machine/xmlns:group/text()").to_s.should eql(@ff.access_rights.downcase)
+      doc.xpath("/xmlns:rightsMetadata/xmlns:access[@type='read']/xmlns:machine/xmlns:group/text()").to_s.should eql(@ff.access_rights.downcase)
     end
   end
 end

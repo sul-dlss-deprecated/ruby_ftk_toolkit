@@ -104,4 +104,25 @@ class HypatiaFileObjectAssembler
     builder.to_xml
   end
   
+  # Build rightsMetadata datastream
+  # @param [FtkFile] ff FTK file object
+  # @return [Nokogiri::XML::Document]
+  def buildRightsMetadata(ff)
+    builder = Nokogiri::XML::Builder.new do |xml|
+      xml.rightsMetadata("xmlns" => "http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1", "version" => "0.1"){
+        xml.access("type" => "discover"){
+          xml.machine {
+            xml.group "public"
+          }
+        }
+        xml.access("type" => "read"){
+          xml.machine {
+            xml.group "public"
+          }
+        }
+      }
+    end
+    builder.to_xml
+  end
+  
 end
