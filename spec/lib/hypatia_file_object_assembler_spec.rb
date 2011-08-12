@@ -11,7 +11,7 @@ require 'factory_girl'
 describe HypatiaFileObjectAssembler do
   before(:all) do
     @fedora_config = File.join(File.dirname(__FILE__), "/../config/fedora.yml")
-    @ftk_report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
+    @ftk_report = File.join(File.dirname(__FILE__), "/../fixtures/ftk_xml/Report.xml")
   end
   context "basic behavior" do
     it "can instantiate" do
@@ -29,9 +29,10 @@ describe HypatiaFileObjectAssembler do
     end
   end
   
-  context "creating bags" do
+  context "creating datastreams" do
     before(:all) do
       @ff = FactoryGirl.build(:ftk_file)
+      @fedora_config = File.join(File.dirname(__FILE__), "/../config/fedora.yml")
       @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
     end
     it "creates a descMetadata file" do
@@ -60,6 +61,16 @@ describe HypatiaFileObjectAssembler do
     it "creates a RELS-EXT datastream" do
       doc = Nokogiri::XML(@hfo.buildRelsExt(@ff))
       doc.xpath("/rdf:RDF/rdf:Description/hydra:isGovernedBy/@rdf:resource").to_s.should eql("info:fedora/hypatia:fixture_xanadu_apo")
+    end
+  end
+  
+  context "creating bags" do
+    before(:all) do
+      @fedora_config = File.join(File.dirname(__FILE__), "/../config/fedora.yml")
+      @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
+    end
+    it "creates a bagit package for an ftk_file" do
+      @hfo.make_bag()
     end
   end
 end
