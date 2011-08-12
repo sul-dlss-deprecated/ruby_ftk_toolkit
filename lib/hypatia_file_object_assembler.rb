@@ -125,4 +125,33 @@ class HypatiaFileObjectAssembler
     builder.to_xml
   end
   
+  # Build the RELS-EXT datastream
+  # @param [FtkFile] ff FTK file object
+  # @return [Nokogiri::XML::Document]
+  # @example document returned
+  #  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rel="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#">
+  #    <rdf:Description rdf:about="foofile.txt_9999">
+  #      <hydra:isGovernedBy rdf:resource="info:fedora/hypatia:fixture_xanadu_apo"/>
+  #      <rel:isMemberOf rdf:resource="PARENT OBJECT GOES HERE"/>
+  #      <rel:hasModel rdf:resource="OBJECT MODEL GOES HERE"/>
+  #    </rdf:Description>
+  #  </rdf:RDF>
+  def buildRelsExt(ff)
+    builder = Nokogiri::XML::Builder.new do |xml|
+      xml.RDF("xmlns:rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+      "xmlns:fedora-model" => "info:fedora/fedora-system:def/model#", 
+      "xmlns:rel"=>"info:fedora/fedora-system:def/relations-external#",
+      "xmlns:hydra"=>"http://projecthydra.org/ns/relations#") {
+        xml.parent.namespace = xml.parent.namespace_definitions.first
+        xml['rdf'].Description("rdf:about" => ff.unique_combo) {
+          xml['hydra'].isGovernedBy("rdf:resource" => "info:fedora/hypatia:fixture_xanadu_apo")
+          xml['rel'].isMemberOf("rdf:resource" => "PARENT OBJECT GOES HERE")
+          xml['rel'].hasModel("rdf:resource" => "OBJECT MODEL GOES HERE")
+        }
+      }
+    end
+    puts builder.to_xml
+    builder.to_xml
+  end
+  
 end

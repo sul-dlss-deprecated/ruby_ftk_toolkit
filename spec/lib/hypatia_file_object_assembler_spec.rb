@@ -60,5 +60,9 @@ describe HypatiaFileObjectAssembler do
       doc.xpath("/xmlns:rightsMetadata/xmlns:access[@type='discover']/xmlns:machine/xmlns:group/text()").to_s.should eql(@ff.access_rights.downcase)
       doc.xpath("/xmlns:rightsMetadata/xmlns:access[@type='read']/xmlns:machine/xmlns:group/text()").to_s.should eql(@ff.access_rights.downcase)
     end
+    it "creates a RELS-EXT datastream" do
+      doc = Nokogiri::XML(@hfo.buildRelsExt(@ff))
+      doc.xpath("/rdf:RDF/rdf:Description/hydra:isGovernedBy/@rdf:resource").to_s.should eql("info:fedora/hypatia:fixture_xanadu_apo")
+    end
   end
 end
