@@ -38,10 +38,14 @@ class HypatiaFileObjectAssembler
     builder = Nokogiri::XML::Builder.new do |xml|
       # Really, mods records should be in the mods namespace, 
       # but it makes it a bit of a pain to query them. 
-      # xml.mods('xmlns' => "http://www.loc.gov/mods/v3") {
-      xml.mods {
+      xml.mods('xmlns' => "http://www.loc.gov/mods/v3") {
+      # xml.mods {
         xml.titleInfo {
           xml.title_ ff.title
+        }
+        xml.typeOfResource_ ff.type
+        xml.physicalDescription {
+          xml.form_ ff.medium
         }
       }
     end
