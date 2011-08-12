@@ -33,7 +33,7 @@ class HypatiaFileObjectAssembler
   
   # Build a MODS record for the FtkFile 
   # @param [FtkFile] The FTK file object
-  # @return
+  # @return [Nokogiri::XML::Document]
   def buildDescMetadata(ff)
     builder = Nokogiri::XML::Builder.new do |xml|
       # Really, mods records should be in the mods namespace, 
@@ -46,6 +46,30 @@ class HypatiaFileObjectAssembler
         xml.typeOfResource_ ff.type
         xml.physicalDescription {
           xml.form_ ff.medium
+        }
+      }
+    end
+    builder.to_xml
+  end
+  
+  # Build a contentMetadata datastream
+  # @param [FtkFile] The FTK file object
+  # @return [Nokogiri::XML::Document]
+  def buildContentMetadata(ff)
+    builder = Nokogiri::XML::Builder.new do |xml|
+      xml.contentMetadata("type" => "born-digital", "objectId" => ff.unique_combo) {
+        xml.resource("id" => "analysis-text", "type" => "analysis", "data" => "metadata", "objectId" => "????"){
+          xml.file("id" => ff.filename, "format" => ff.filetype, "size" => ff.filesize) {
+            xml.location("type" => "filesystem") {
+              xml.text ff.export_path
+            }
+            xml.checksum("type" => "md5") {
+              xml.text ff.md5
+            }
+            xml.checksum("type" => "sha1") {
+              xml.text ff.sha1
+            }
+          }
         }
       }
     end

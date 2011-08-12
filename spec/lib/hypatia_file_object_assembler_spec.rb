@@ -41,5 +41,19 @@ describe HypatiaFileObjectAssembler do
       doc.xpath("/xmlns:mods/xmlns:typeOfResource/text()").to_s.should eql(@ff.type)
       doc.xpath("/xmlns:mods/xmlns:physicalDescription/xmlns:form/text()").to_s.should eql(@ff.medium)
     end
+    it "creates a contentMetadata file" do
+      cm = @hfo.buildContentMetadata(@ff)
+      doc = Nokogiri::XML(cm)
+      puts doc.class
+      doc.xpath("/contentMetadata/@type").to_s.should eql("born-digital")
+      doc.xpath("/contentMetadata/@objectId").to_s.should eql(@ff.unique_combo)
+      doc.xpath("/contentMetadata/resource/@type").to_s.should eql("analysis")
+      doc.xpath("/contentMetadata/resource/file/@id").to_s.should eql(@ff.filename)
+      doc.xpath("/contentMetadata/resource/file/@format").to_s.should eql(@ff.filetype)
+      doc.xpath("/contentMetadata/resource/file/location/@type").to_s.should eql("filesystem")
+      doc.xpath("/contentMetadata/resource/file/location/text()").to_s.should eql(@ff.export_path)      
+      doc.xpath("/contentMetadata/resource/file/checksum[@type='md5']/text()").to_s.should eql(@ff.md5)      
+      doc.xpath("/contentMetadata/resource/file/checksum[@type='sha1']/text()").to_s.should eql(@ff.sha1)
+    end
   end
 end
