@@ -44,7 +44,6 @@ describe HypatiaFileObjectAssembler do
     it "creates a contentMetadata file" do
       cm = @hfo.buildContentMetadata(@ff)
       doc = Nokogiri::XML(cm)
-      puts doc.class
       doc.xpath("/contentMetadata/@type").to_s.should eql("born-digital")
       doc.xpath("/contentMetadata/@objectId").to_s.should eql(@ff.unique_combo)
       doc.xpath("/contentMetadata/resource/@type").to_s.should eql("analysis")
@@ -54,6 +53,12 @@ describe HypatiaFileObjectAssembler do
       doc.xpath("/contentMetadata/resource/file/location/text()").to_s.should eql(@ff.export_path)      
       doc.xpath("/contentMetadata/resource/file/checksum[@type='md5']/text()").to_s.should eql(@ff.md5)      
       doc.xpath("/contentMetadata/resource/file/checksum[@type='sha1']/text()").to_s.should eql(@ff.sha1)
+    end
+    it "creates a rightsMetdata file" do
+      pending
+      rm = @hfo.buildRightsMetadata(@ff)
+      doc = Nokogiri::XML(rm)
+      
     end
   end
 end

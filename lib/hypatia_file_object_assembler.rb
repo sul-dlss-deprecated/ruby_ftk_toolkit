@@ -77,6 +77,12 @@ class HypatiaFileObjectAssembler
   #      </file>
   #    </resource>
   #  </contentMetadata>
+  # @example calling this method
+  #  @ff = FactoryGirl.build(:ftk_file)
+  #  @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
+  #  cm = @hfo.buildContentMetadata(@ff)
+  #  doc = Nokogiri::XML(cm)
+  #  doc.xpath("/contentMetadata/@type").to_s.should eql("born-digital")
   def buildContentMetadata(ff)
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.contentMetadata("type" => "born-digital", "objectId" => ff.unique_combo) {
@@ -94,9 +100,7 @@ class HypatiaFileObjectAssembler
           }
         }
       }
-    end
-    puts builder.to_xml
-    
+    end    
     builder.to_xml
   end
   
