@@ -32,20 +32,31 @@ class HypatiaFileObjectAssembler
   end
   
   # Build a MODS record for the FtkFile 
-  # @param [FtkFile] The FTK file object
+  # @param [FtkFile] ff FTK file object
   # @return [Nokogiri::XML::Document]
+  # @example document returned
+  #  <?xml version="1.0"?>
+  #  <mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
+  #   <mods:titleInfo>
+  #     <mods:title>A Heartbreaking Work of Staggering Genius</mods:title>
+  #   </mods:titleInfo>
+  #   <mods:typeOfResource>Journal Article</mods:typeOfResource>
+  #   <mods:physicalDescription>
+  #     <mods:form>Punch Cards</mods:form>
+  #   </mods:physicalDescription>
+  #  </mods:mods>
   def buildDescMetadata(ff)
     builder = Nokogiri::XML::Builder.new do |xml|
       # Really, mods records should be in the mods namespace, 
       # but it makes it a bit of a pain to query them. 
-      xml.mods('xmlns' => "http://www.loc.gov/mods/v3") {
-      # xml.mods {
-        xml.titleInfo {
-          xml.title_ ff.title
+      xml.mods('xmlns:mods' => "http://www.loc.gov/mods/v3") {
+        xml.parent.namespace = xml.parent.namespace_definitions.first
+        xml['mods'].titleInfo {
+          xml['mods'].title_ ff.title
         }
-        xml.typeOfResource_ ff.type
-        xml.physicalDescription {
-          xml.form_ ff.medium
+        xml['mods'].typeOfResource_ ff.type
+        xml['mods'].physicalDescription {
+          xml['mods'].form_ ff.medium
         }
       }
     end
@@ -53,8 +64,19 @@ class HypatiaFileObjectAssembler
   end
   
   # Build a contentMetadata datastream
-  # @param [FtkFile] The FTK file object
+  # @param [FtkFile] ff FTK file object
   # @return [Nokogiri::XML::Document]
+  # @example document returned
+  #  <?xml version="1.0"?>
+  #  <contentMetadata type="born-digital" objectId="foofile.txt_9999">
+  #    <resource data="metadata" id="analysis-text" type="analysis" objectId="????">
+  #      <file size="504 B" format="WordPerfect 5.1" id="foofile.txt">
+  #        <location type="filesystem">files/foofile.txt</location>
+  #        <checksum type="md5">4E1AA0E78D99191F4698EEC437569D23</checksum>
+  #        <checksum type="sha1">B6373D02F3FD10E7E1AA0E3B3AE3205D6FB2541C</checksum>
+  #      </file>
+  #    </resource>
+  #  </contentMetadata>
   def buildContentMetadata(ff)
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.contentMetadata("type" => "born-digital", "objectId" => ff.unique_combo) {
@@ -73,6 +95,8 @@ class HypatiaFileObjectAssembler
         }
       }
     end
+    puts builder.to_xml
+    
     builder.to_xml
   end
   

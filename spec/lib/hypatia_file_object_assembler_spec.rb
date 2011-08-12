@@ -37,9 +37,9 @@ describe HypatiaFileObjectAssembler do
     it "creates a descMetadata file" do
       dm = @hfo.buildDescMetadata(@ff)
       doc = Nokogiri::XML(dm)
-      doc.xpath("/xmlns:mods/xmlns:titleInfo/xmlns:title/text()").to_s.should eql(@ff.title)
-      doc.xpath("/xmlns:mods/xmlns:typeOfResource/text()").to_s.should eql(@ff.type)
-      doc.xpath("/xmlns:mods/xmlns:physicalDescription/xmlns:form/text()").to_s.should eql(@ff.medium)
+      doc.xpath("/mods:mods/mods:titleInfo/mods:title/text()").to_s.should eql(@ff.title)
+      doc.xpath("/mods:mods/mods:typeOfResource/text()").to_s.should eql(@ff.type)
+      doc.xpath("/mods:mods/mods:physicalDescription/mods:form/text()").to_s.should eql(@ff.medium)
     end
     it "creates a contentMetadata file" do
       cm = @hfo.buildContentMetadata(@ff)
