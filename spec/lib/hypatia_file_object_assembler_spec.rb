@@ -11,7 +11,7 @@ require 'factory_girl'
 describe HypatiaFileObjectAssembler do
   before(:all) do
     @fedora_config = File.join(File.dirname(__FILE__), "/../config/fedora.yml")
-    @ftk_report = File.join(File.dirname(__FILE__), "/../fixtures/ftk_xml/Report.xml")
+    @ftk_report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
   end
   context "basic behavior" do
     it "can instantiate" do
@@ -70,6 +70,7 @@ describe HypatiaFileObjectAssembler do
       @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
     end
     it "creates a bagit package for an ftk_file" do
+      pending
       @hfo.make_bag()
     end
   end
