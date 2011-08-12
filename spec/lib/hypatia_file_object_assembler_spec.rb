@@ -35,10 +35,14 @@ describe HypatiaFileObjectAssembler do
       @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
     end
     it "creates a descMetadata file" do
-      pending
-      dm = @hfo.buildDescMetadata
-      puts @ff.class
-      puts @ff.filename
+      dm = @hfo.buildDescMetadata(@ff)
+      doc = Nokogiri::XML(dm)
+      puts "<p>!!!"
+      puts doc.inspect
+      puts "!!!</p>"
+      doc.xpath("/mods/titleInfo/title/text()").to_s.should eql(@ff.title)
+      # puts @ff.class
+      # puts @ff.filename
     end
   end
 end

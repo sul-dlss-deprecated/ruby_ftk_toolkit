@@ -24,11 +24,28 @@ class HypatiaFileObjectAssembler
   end
   
   # WHAT_DOES_THIS_METHOD_DO?
-  # @param
-  # @return
+  # @param [FtkFile] The FTK file object 
+  # @return 
   # @example
-  def create_bag
+  def create_bag(ff)
     
+  end
+  
+  # Build a MODS record for the FtkFile 
+  # @param [FtkFile] The FTK file object
+  # @return
+  def buildDescMetadata(ff)
+    builder = Nokogiri::XML::Builder.new do |xml|
+      # Really, mods records should be in the mods namespace, 
+      # but it makes it a bit of a pain to query them. 
+      # xml.mods('xmlns' => "http://www.loc.gov/mods/v3") {
+      xml.mods {
+        xml.titleInfo {
+          xml.title_ ff.title
+        }
+      }
+    end
+    builder.to_xml
   end
   
 end
