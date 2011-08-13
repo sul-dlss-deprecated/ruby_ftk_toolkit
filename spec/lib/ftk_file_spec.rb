@@ -2,6 +2,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require File.join(File.dirname(__FILE__), "/../../lib/ftk_file")
 require 'rubygems'
 require 'ruby-debug'
+require 'factory_girl'
+
 
 describe FtkFile do
   context "basic behavior" do
@@ -19,6 +21,11 @@ describe FtkFile do
       fields.each do |field|
         hfo.send(field,"foo").should eql("foo")
       end
+    end
+    it "updates the destination_file when export_path is set" do
+      ff = FtkFile.new
+      ff.export_path = "/really/long/path/to/filename.txt"
+      ff.destination_file.should eql("filename.txt")
     end
   end
 end

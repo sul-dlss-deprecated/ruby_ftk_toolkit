@@ -24,12 +24,23 @@ class FtkFile
   attr_accessor :restricted           # Is the use of this file restricted? (e.g., "False")
   attr_accessor :md5                  # The md5 checksum of this file (e.g., "4E1AA0E78D99191F4698EEC437569D23")
   attr_accessor :sha1                 # The sha1 checksum of this file (e.g., "B6373D02F3FD10E7E1AA0E3B3AE3205D6FB2541C")
-  attr_accessor :export_path          # The location where FTK put this file after processing (e.g., "files/gould_407_linages_10_characters.txt")
-  
+  attr_reader   :export_path          # The location where FTK put this file after processing (e.g., "files/gould_407_linages_10_characters.txt")
+  attr_reader   :destination_file     # The filename part of :export_path. Occasionally this is different from plain old :filename
   
   def initialize(args = {})
-
+    
   end
   
+  # Whenever we set the value of @export_path, also set the value of @destination_file
+  # @param [String] m # The location where FTK put this file after processing (e.g., "/path/to/filename.txt") 
+  def export_path=(m)
+    @export_path = m
+    a = m.split('/')
+    if (a.length == 1)
+      @destination_file = m
+    else
+      @destination_file = a.last
+    end
+  end
   
 end
