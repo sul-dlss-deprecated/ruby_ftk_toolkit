@@ -1,6 +1,11 @@
+require 'bagit'
+
 class HypatiaFileObjectAssembler
   
-  attr_accessor :ftk_processor 
+  attr_accessor :ftk_report         # The FTK report to process
+  attr_accessor :ftk_processor      # The FtkProcessor object used to parse the FTK report
+  attr_accessor :file_dir           # Where should I copy the files from? 
+  attr_accessor :bag_destination    # When I create BagIt packages, where should they go? 
   
   def initialize(args={})
     @logger = Logger.new('logs/logfile.log')
@@ -11,24 +16,73 @@ class HypatiaFileObjectAssembler
     else
       ActiveFedora.init
     end
+    
+    setBagDestination(args)
+  end
+  
+  # Determine where bags should be written and set the value of @bag_destination
+  # @param [Hash] args the args that were passed to initialize this object
+  def setBagDestination(args)
+    if args[:bag_destination]
+      @bag_destination = args[:bag_destination]
+    else
+      @bag_destination = "/tmp"
+    end
   end
   
   # Process an FTK report and turn each of the files into fedora objects
-  # @param [String] the path to the FTK report
-  def process(ftk_report)
+  # @param [String] ftk_report the path to the FTK report
+  # @param [String] file_dir the directory holding the files
+  def process(ftk_report, file_dir)
     @logger.debug "ftk report = #{ftk_report}"
-    @ftk_processor = FtkProcessor.new(:ftk_report => ftk_report, :logfile => @logger)
+    @logger.debug "file_dir = #{file_dir}"
+    @ftk_report = ftk_report
+    @file_dir = file_dir
+    @ftk_processor = FtkProcessor.new(:ftk_report => @ftk_report, :logfile => @logger)
     @ftk_processor.files.each do |ftk_file|
       create_bag(ftk_file[1])
     end
   end
   
-  # WHAT_DOES_THIS_METHOD_DO?
+  # Create a bagit package for an FTK file
   # @param [FtkFile] The FTK file object 
-  # @return 
+  # @return [BagIt::Bag]
   # @example
   def create_bag(ff)
-    
+    @logger.debug "Creating bag for #{ff.unique_combo}"
+
+    bag = BagIt::Bag.new File.join(@bag_destination, "/#{ff.unique_combo}")
+    descMeta = buildDescMetadata(ff)
+    contentMeta = buildContentMetadata(ff)
+    # 
+    puts "<p>!!!"
+    # puts ff.inspect
+    puts descMeta
+    puts contentMeta
+    puts "!!!</p>"
+    # 
+    bag.add_file("descMetadata.xml") do |io|
+      io.puts descMeta
+    end
+    bag.add_file("contentMetadata.xml") do |io|
+      io.puts contentMeta
+    end
+    bag.add_file("rightsMetadata.xml") do |io|
+      io.puts buildRightsMetadata(ff)
+    end
+    bag.add_file("RELS-EXT.xml") do |io|
+      io.puts buildRelsExt(ff)
+    end
+    # copy_payload(ff)
+    bag.manifest!
+    return bag
+  end
+  
+  # Copy the payload file from the source destination to the bagit package
+  # @param [FtkFile] ff FTK file object
+  # @param [BagIt::Bag] bag The bagit directory destination
+  def copy_payload(ff,bag)
+    # @source_file = ff.
   end
   
   # Build a MODS record for the FtkFile 
@@ -46,6 +100,8 @@ class HypatiaFileObjectAssembler
   #   </mods:physicalDescription>
   #  </mods:mods>
   def buildDescMetadata(ff)
+    puts ff.inspect
+    @logger.debug "building desc metadata for #{ff.unique_combo} "
     builder = Nokogiri::XML::Builder.new do |xml|
       # Really, mods records should be in the mods namespace, 
       # but it makes it a bit of a pain to query them. 

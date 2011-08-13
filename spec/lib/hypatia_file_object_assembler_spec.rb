@@ -7,11 +7,13 @@ require File.join(File.dirname(__FILE__), "/../factories/ftk_files.rb")
 require 'rubygems'
 require 'ruby-debug'
 require 'factory_girl'
+require 'tempfile'
 
 describe HypatiaFileObjectAssembler do
   before(:all) do
     @fedora_config = File.join(File.dirname(__FILE__), "/../config/fedora.yml")
     @ftk_report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
+    @file_dir = File.join(File.dirname(__FILE__), "/../fixtures/files")
   end
   context "basic behavior" do
     it "can instantiate" do
@@ -25,7 +27,9 @@ describe HypatiaFileObjectAssembler do
     it "processes an FTK report" do
       hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
       hfo.expects(:create_bag).at_least(56).returns(nil)
-      hfo.process(@ftk_report)
+      hfo.process(@ftk_report,@file_dir)
+      hfo.ftk_report.should eql(@ftk_report)
+      hfo.file_dir.should eql(@file_dir)
     end
   end
   
@@ -66,12 +70,30 @@ describe HypatiaFileObjectAssembler do
   
   context "creating bags" do
     before(:all) do
+      @ff = FactoryGirl.build(:ftk_file)
       @fedora_config = File.join(File.dirname(__FILE__), "/../config/fedora.yml")
       @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
     end
+    it "knows where to put bags it creates" do
+      Dir.mktmpdir {|dir|
+        hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config, :bag_destination => dir)
+        hfo.bag_destination.should eql(dir)
+       }
+    end
     it "creates a bagit package for an ftk_file" do
-      pending
-      @hfo.make_bag()
+      # Dir.mktmpdir {|dir|
+        dir = Dir.mktmpdir
+        hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config, :bag_destination => dir)
+        bag = hfo.create_bag(@ff)
+        puts "bag is at #{dir}"
+        
+        File.file?(File.join(dir,@ff.unique_combo,"/data/contentMetadata.xml")).should eql(true)
+        File.file?(File.join(dir,@ff.unique_combo,"/data/descMetadata.xml")).should eql(true)
+        File.file?(File.join(dir,@ff.unique_combo,"/data/RELS-EXT.xml")).should eql(true)
+        File.file?(File.join(dir,@ff.unique_combo,"/data/rightsMetadata.xml")).should eql(true)
+        # File.file?(File.join(dir,@ff.unique_combo,"/data/#{@ff.filename}")).should eql(true)
+        bag.valid?.should eql(true)
+       # }
     end
   end
 end
