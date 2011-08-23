@@ -73,6 +73,8 @@ describe HypatiaFileObjectAssembler do
       @ff = FactoryGirl.build(:ftk_file)
       @fedora_config = File.join(File.dirname(__FILE__), "/../config/fedora.yml")
       @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
+      @ftk_report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
+      @file_dir = File.join(File.dirname(__FILE__), "/../fixtures")
     end
     it "knows where to put bags it creates" do
       Dir.mktmpdir {|dir|
@@ -80,20 +82,27 @@ describe HypatiaFileObjectAssembler do
         hfo.bag_destination.should eql(dir)
        }
     end
-    it "creates a bagit package for an ftk_file" do
-      # Dir.mktmpdir {|dir|
-        dir = Dir.mktmpdir
+    
+    it "throws an exception if you try to create a bag without telling it where the payload files are" do
+      Dir.mktmpdir { |dir|
         hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config, :bag_destination => dir)
+        lambda { hfo.create_bag(@ff) }.should raise_exception
+      }
+    end
+    
+    it "creates a bagit package for an ftk_file" do
+      Dir.mktmpdir {|dir|
+        hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config, :bag_destination => dir)
+        hfo.file_dir = @file_dir
         bag = hfo.create_bag(@ff)
-        puts "bag is at #{dir}"
         
         File.file?(File.join(dir,@ff.unique_combo,"/data/contentMetadata.xml")).should eql(true)
         File.file?(File.join(dir,@ff.unique_combo,"/data/descMetadata.xml")).should eql(true)
         File.file?(File.join(dir,@ff.unique_combo,"/data/RELS-EXT.xml")).should eql(true)
         File.file?(File.join(dir,@ff.unique_combo,"/data/rightsMetadata.xml")).should eql(true)
-        # File.file?(File.join(dir,@ff.unique_combo,"/data/#{@ff.filename}")).should eql(true)
+        File.file?(File.join(dir,@ff.unique_combo,"/data/#{@ff.destination_file}")).should eql(true)
         bag.valid?.should eql(true)
-       # }
+       }
     end
   end
 end

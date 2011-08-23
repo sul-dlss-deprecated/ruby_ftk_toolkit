@@ -37,6 +37,7 @@ class HypatiaFileObjectAssembler
     @logger.debug "ftk report = #{ftk_report}"
     @logger.debug "file_dir = #{file_dir}"
     @ftk_report = ftk_report
+    raise "Directory #{file_dir} not found" unless File.directory? file_dir
     @file_dir = file_dir
     @ftk_processor = FtkProcessor.new(:ftk_report => @ftk_report, :logfile => @logger)
     @ftk_processor.files.each do |ftk_file|
@@ -49,18 +50,11 @@ class HypatiaFileObjectAssembler
   # @return [BagIt::Bag]
   # @example
   def create_bag(ff)
+    raise "I can't create a bag without knowing where the files come from" unless @file_dir
     @logger.debug "Creating bag for #{ff.unique_combo}"
-
     bag = BagIt::Bag.new File.join(@bag_destination, "/#{ff.unique_combo}")
     descMeta = buildDescMetadata(ff)
     contentMeta = buildContentMetadata(ff)
-    # 
-    puts "<p>!!!"
-    # puts ff.inspect
-    puts descMeta
-    puts contentMeta
-    puts "!!!</p>"
-    # 
     bag.add_file("descMetadata.xml") do |io|
       io.puts descMeta
     end
@@ -73,7 +67,7 @@ class HypatiaFileObjectAssembler
     bag.add_file("RELS-EXT.xml") do |io|
       io.puts buildRelsExt(ff)
     end
-    # copy_payload(ff)
+    copy_payload(ff,bag)
     bag.manifest!
     return bag
   end
@@ -82,7 +76,9 @@ class HypatiaFileObjectAssembler
   # @param [FtkFile] ff FTK file object
   # @param [BagIt::Bag] bag The bagit directory destination
   def copy_payload(ff,bag)
-    # @source_file = ff.
+    source_file = File.join(@file_dir,ff.export_path)
+    @logger.error "Couldn't find file #{source_file} for bagging" unless File.file? source_file
+    bag.add_file(ff.filename, source_file)
   end
   
   # Build a MODS record for the FtkFile 
@@ -100,7 +96,6 @@ class HypatiaFileObjectAssembler
   #   </mods:physicalDescription>
   #  </mods:mods>
   def buildDescMetadata(ff)
-    puts ff.inspect
     @logger.debug "building desc metadata for #{ff.unique_combo} "
     builder = Nokogiri::XML::Builder.new do |xml|
       # Really, mods records should be in the mods namespace, 
@@ -206,7 +201,6 @@ class HypatiaFileObjectAssembler
         }
       }
     end
-    puts builder.to_xml
     builder.to_xml
   end
   
