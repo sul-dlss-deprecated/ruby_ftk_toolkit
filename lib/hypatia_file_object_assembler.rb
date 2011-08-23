@@ -69,6 +69,7 @@ class HypatiaFileObjectAssembler
     end
     copy_payload(ff,bag)
     bag.manifest!
+    @logger.info "Bag created at #{bag.bag_dir}"
     return bag
   end
   
