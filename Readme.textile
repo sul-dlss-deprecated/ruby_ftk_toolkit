@@ -1,0 +1,40 @@
+h1. Ruby FTK Toolkit
+
+This is a ruby library for manipulating the output of Forensic Toolkit (http://accessdata.com/products/computer-forensics/ftk). It was built for a project called Hypatia (http://wiki.duraspace.org/display/HYPAT/Charter) but can be used elsewhere. It makes certain assumptions about how FTK outputs data, which will be documented here soon.
+
+The XML output that FTK creates is an XML-FO document that isn't easy to read or understand. This library can do that for you. To turn an FTK report into something that's easier to work with, follow this example:
+
+<pre>
+	<code>
+		require 'ruby_ftk_toolkit'
+		
+      	report = File.join(File.dirname(__FILE__), "/spec/fixtures/Gould_FTK_Report.xml")
+		ftk_processor = FtkProcessor.new(:ftk_report => report)
+      	
+		# You can get collection level data 
+		ftk_processor.collection_title # => "Stephen Jay Gould papers"
+		ftk_processor.call_number 	# => "M1437"
+		ftk_processor.series # => "Series 6: Born Digital Materials"
+		ftk_processor.file_count # => "56"
+		
+		# And you can get file level data in the form of FtkFile objects
+		ftk_processor.files.each do |ftk_file|
+			puts ftk_file[1].filename
+			puts ftk_file[1].id
+			puts ftk_file[1].md5
+    	end
+	</code>
+</pre>
+
+You might want to create BagIt packages for each file from your FTK output:
+<pre>
+	<code>
+	# Assemble FTK output into objects for Hypatia. 
+	my_fedora_config = "/path/to/fedora.yml"
+	my_bag_dir = "/path/to/where/my/bags/should/be/created"
+	ftk_report = "/path/to/FTK_Report.xml"
+	file_dir = "/path/to/exported/ftk/file/directory"
+	hfo = HypatiaFileObjectAssembler.new(:fedora_config => my_fedora_config, :bag_destination => my_bag_dir)
+	hfo.process(ftk_report, file_dir)
+	</code>
+</pre>
