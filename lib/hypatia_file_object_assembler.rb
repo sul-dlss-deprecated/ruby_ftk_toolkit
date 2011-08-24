@@ -1,5 +1,13 @@
 require 'bagit'
 
+# Assemble FTK output into objects for Hypatia. 
+# @example Process an FTK report and a directory of files
+#  my_fedora_config = "/path/to/fedora.yml"
+#  my_bag_dir = "/path/to/where/my/bags/should/be/created"
+#  ftk_report = "/path/to/FTK_Report.xml"
+#  file_dir = "/path/to/exported/ftk/file/directory"
+#  hfo = HypatiaFileObjectAssembler.new(:fedora_config => my_fedora_config, :bag_destination => my_bag_dir)
+#  hfo.process(ftk_report, file_dir)
 class HypatiaFileObjectAssembler
   
   attr_accessor :ftk_report         # The FTK report to process
@@ -7,6 +15,8 @@ class HypatiaFileObjectAssembler
   attr_accessor :file_dir           # Where should I copy the files from? 
   attr_accessor :bag_destination    # When I create BagIt packages, where should they go? 
   
+  # @param [Hash] args 
+  # @param [Hash[:fedora_config]] 
   def initialize(args={})
     @logger = Logger.new('logs/logfile.log')
     @logger.debug 'Initializing Hypatia File Object Assembler'
