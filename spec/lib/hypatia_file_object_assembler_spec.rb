@@ -68,31 +68,43 @@ describe HypatiaFileObjectAssembler do
     end
   end
   
-  context "creating bags" do
+  context "creating fedora objects" do
     before(:all) do
       @ff = FactoryGirl.build(:ftk_file)
       @fedora_config = File.join(File.dirname(__FILE__), "/../config/fedora.yml")
-      @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)
+      @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)   
+      @ftk_report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
+      @file_dir = File.join(File.dirname(__FILE__), "/../fixtures")   
+    end
+    
+    it "creates a fedora object for a given file" do
+      @hfo.create_fedora_object(@ff).should be_kind_of(ActiveFedora::Base)
+    end
+  end
+  
+  context "creating bags" do
+    before(:all) do
+      @ff = FactoryGirl.build(:ftk_file)
       @ftk_report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
       @file_dir = File.join(File.dirname(__FILE__), "/../fixtures")
     end
     it "knows where to put bags it creates" do
       Dir.mktmpdir {|dir|
-        hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config, :bag_destination => dir)
+        hfo = HypatiaFileObjectAssembler.new(:bag_destination => dir)
         hfo.bag_destination.should eql(dir)
        }
     end
     
     it "throws an exception if you try to create a bag without telling it where the payload files are" do
       Dir.mktmpdir { |dir|
-        hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config, :bag_destination => dir)
+        hfo = HypatiaFileObjectAssembler.new(:bag_destination => dir)
         lambda { hfo.create_bag(@ff) }.should raise_exception
       }
     end
     
     it "creates a bagit package for an ftk_file" do
       Dir.mktmpdir {|dir|
-        hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config, :bag_destination => dir)
+        hfo = HypatiaFileObjectAssembler.new(:bag_destination => dir)
         hfo.file_dir = @file_dir
         bag = hfo.create_bag(@ff)
         
