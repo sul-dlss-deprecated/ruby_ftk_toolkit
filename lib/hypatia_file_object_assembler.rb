@@ -220,7 +220,19 @@ class HypatiaFileObjectAssembler
   # @return [ActiveFedora::Base]
   # @example
   def create_fedora_object(ff)
-    return ActiveFedora::Base.new
+    obj = ActiveFedora::Base.new
+    contentMetadata = ActiveFedora::Datastream.new(:dsID => "contentMetadata", :dsLabel => 'Content Metadata', :controlGroup => 'M', :blob => buildContentMetadata(ff))
+    descMetadata = ActiveFedora::Datastream.new(:dsID => "descMetadata", :dsLabel => 'Descriptive Metadata', :controlGroup => 'M', :blob => buildDescMetadata(ff))
+    # rels_ext = ActiveFedora::Datastream.new(:dsID => "RELS-EXT", :dsLabel => 'External Relationships', :controlGroup => 'M', :blob => buildRelsExt(ff))
+    rightsMetadata = ActiveFedora::Datastream.new(:dsID => "rightsMetadata", :dsLabel => 'Rights Metadata', :controlGroup => 'M', :blob => buildRightsMetadata(ff))
+    
+    obj.add_datastream(contentMetadata)
+    obj.add_datastream(descMetadata)
+    # obj.add_datastream(rels_ext)
+    obj.add_datastream(rightsMetadata)
+    
+    obj.save
+    return obj
   end
   
 end

@@ -81,6 +81,14 @@ describe HypatiaFileObjectAssembler do
       af = @hfo.create_fedora_object(@ff)
       af.should be_instance_of(ActiveFedora::Base)
     end
+    
+    it "includes all the expected metadata datastreams" do
+      af = @hfo.create_fedora_object(@ff)
+      ['contentMetadata','descMetadata','rightsMetadata','DC'].each do |datastream_name|
+        af.datastreams[datastream_name].should_not eql(nil)
+      end
+      
+    end
   end
   
   context "creating bags" do
