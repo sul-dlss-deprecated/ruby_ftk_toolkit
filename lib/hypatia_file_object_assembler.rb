@@ -215,4 +215,12 @@ class HypatiaFileObjectAssembler
     builder.to_xml
   end
   
+  # Create a fedora object for an FTK file
+  # @param [FtkFile] The FTK file object 
+  # @return [ActiveFedora::Base]
+  # @example
+  def create_fedora_object(ff)
+    return ActiveFedora::Base.new
+  end
+  
 end

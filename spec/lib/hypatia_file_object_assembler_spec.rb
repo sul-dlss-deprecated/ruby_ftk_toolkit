@@ -77,8 +77,9 @@ describe HypatiaFileObjectAssembler do
       @file_dir = File.join(File.dirname(__FILE__), "/../fixtures")   
     end
     
-    it "creates a fedora object for a given file" do
-      @hfo.create_fedora_object(@ff).should be_kind_of(ActiveFedora::Base)
+    it "accepts an FtkFile as an argument and returns an ActiveFedora::Base object" do
+      af = @hfo.create_fedora_object(@ff)
+      af.should be_instance_of(ActiveFedora::Base)
     end
   end
   
