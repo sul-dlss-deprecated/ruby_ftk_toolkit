@@ -1,6 +1,6 @@
 test:
   fedora:
-    url: http://fedoraAdmin:fedoraAdmin@127.0.0.1:8983/fedora
+    url: http://fedoraAdmin:fedoraAdmin@127.0.0.1:8983/fedora-test
   solr:
     url: http://127.0.0.1:8983/solr/test
 development:
