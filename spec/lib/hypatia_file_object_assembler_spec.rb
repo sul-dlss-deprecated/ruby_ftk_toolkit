@@ -74,21 +74,24 @@ describe HypatiaFileObjectAssembler do
       @fedora_config = File.join(File.dirname(__FILE__), "/../config/fedora.yml")
       @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)   
       @ftk_report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
-      @file_dir = File.join(File.dirname(__FILE__), "/../fixtures")   
+      @file_dir = File.join(File.dirname(__FILE__), "/../fixtures") 
+      @af = @hfo.create_fedora_object(@ff)  
     end
     
     it "accepts an FtkFile as an argument and returns an ActiveFedora::Base object" do
-      af = @hfo.create_fedora_object(@ff)
-      af.should be_instance_of(ActiveFedora::Base)
+      @af.should be_instance_of(ActiveFedora::Base)
     end
     
     it "includes all the expected metadata datastreams" do
-      af = @hfo.create_fedora_object(@ff)
-      ['contentMetadata','descMetadata','rightsMetadata','DC'].each do |datastream_name|
-        af.datastreams[datastream_name].should_not eql(nil)
+      ['contentMetadata','descMetadata','rightsMetadata','DC','RELS-EXT'].each do |datastream_name|
+        @af.datastreams[datastream_name].should_not eql(nil)
       end
-      
     end
+    
+    it "has a file object with an isMemberOf relationship" do
+      @af. 
+    end
+    
   end
   
   context "creating bags" do
