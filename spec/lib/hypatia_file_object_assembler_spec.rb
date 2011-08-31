@@ -89,7 +89,7 @@ describe HypatiaFileObjectAssembler do
     end
     
     it "has a file object with an isMemberOf relationship" do
-      @af. 
+      pending
     end
     
   end
