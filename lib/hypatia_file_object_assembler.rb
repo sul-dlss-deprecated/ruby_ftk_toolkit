@@ -215,24 +215,33 @@ class HypatiaFileObjectAssembler
     builder.to_xml
   end
   
-  # Create a fedora object for an FTK file
+  # Create a hypatia item level fedora object for an FTK file
   # @param [FtkFile] The FTK file object 
   # @return [ActiveFedora::Base]
   # @example
-  def create_fedora_object(ff)
-    obj = ActiveFedora::Base.new
+  def create_hypatia_item(ff)
+    hypatia_item = HypatiaItem.new
     contentMetadata = ActiveFedora::Datastream.new(:dsID => "contentMetadata", :dsLabel => 'Content Metadata', :controlGroup => 'M', :blob => buildContentMetadata(ff))
     descMetadata = ActiveFedora::Datastream.new(:dsID => "descMetadata", :dsLabel => 'Descriptive Metadata', :controlGroup => 'M', :blob => buildDescMetadata(ff))
-    # rels_ext = ActiveFedora::Datastream.new(:dsID => "RELS-EXT", :dsLabel => 'External Relationships', :controlGroup => 'M', :blob => buildRelsExt(ff))
     rightsMetadata = ActiveFedora::Datastream.new(:dsID => "rightsMetadata", :dsLabel => 'Rights Metadata', :controlGroup => 'M', :blob => buildRightsMetadata(ff))
     
-    obj.add_datastream(contentMetadata)
-    obj.add_datastream(descMetadata)
-    # obj.add_datastream(rels_ext)
-    obj.add_datastream(rightsMetadata)
+    hypatia_item.add_datastream(contentMetadata)
+    hypatia_item.add_datastream(descMetadata)
+    hypatia_item.add_datastream(rightsMetadata)
     
-    obj.save
-    return obj
+    create_hypatia_file(hypatia_item,ff)
+    
+    hypatia_item.save
+    return hypatia_item
   end
   
+  # Create a hypatia file level fedora object for an FTK file
+  # @param
+  # @return
+  # @example
+  def create_hypatia_file(hypatia_item,ff)
+    hypatia_file = HypatiaFile.new
+    hypatia_file.add_relationship(:is_member_of,hypatia_item)
+    hypatia_file.save
+  end
 end

@@ -2,6 +2,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require File.join(File.dirname(__FILE__), "/../../lib/ftk_file")
 require File.join(File.dirname(__FILE__), "/../../lib/ftk_processor")
 require File.join(File.dirname(__FILE__), "/../../lib/hypatia_file_object_assembler")
+require File.join(File.dirname(__FILE__), "/../../lib/hypatia_item")
+require File.join(File.dirname(__FILE__), "/../../lib/hypatia_file")
+
 require File.join(File.dirname(__FILE__), "/../factories/ftk_files.rb")
 
 require 'rubygems'
@@ -75,21 +78,22 @@ describe HypatiaFileObjectAssembler do
       @hfo = HypatiaFileObjectAssembler.new(:fedora_config => @fedora_config)   
       @ftk_report = File.join(File.dirname(__FILE__), "/../fixtures/Gould_FTK_Report.xml")
       @file_dir = File.join(File.dirname(__FILE__), "/../fixtures") 
-      @af = @hfo.create_fedora_object(@ff)  
+      @hi = @hfo.create_hypatia_item(@ff)  
     end
     
-    it "accepts an FtkFile as an argument and returns an ActiveFedora::Base object" do
-      @af.should be_instance_of(ActiveFedora::Base)
+    it "accepts an FtkFile as an argument and returns a HypatiaItem object" do
+      @hi.should be_instance_of(HypatiaItem)
     end
     
     it "includes all the expected metadata datastreams" do
       ['contentMetadata','descMetadata','rightsMetadata','DC','RELS-EXT'].each do |datastream_name|
-        @af.datastreams[datastream_name].should_not eql(nil)
+        @hi.datastreams[datastream_name].should_not eql(nil)
       end
     end
     
     it "has a file object with an isMemberOf relationship" do
-      pending
+      @hi.inbound_relationships[:is_member_of].length.should eql(1)
+      # {:is_member_of=>["info:fedora/changeme:54"]}
     end
     
   end
