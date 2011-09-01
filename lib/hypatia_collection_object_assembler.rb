@@ -15,7 +15,7 @@ class HypatiaCollectionObjectAssembler
     raise "Please pass me a fedora config" unless args[:fedora_config]
     @fedora_config = args[:fedora_config]
     ActiveFedora.init(args[:fedora_config])
-    @collection = ActiveFedora::Base.new(:pid_namespace => "hypatia")
+    @collection = HypatiaCollection.new(:pid_namespace => "hypatia")
   end
   
   

@@ -3,6 +3,8 @@ require File.join(File.dirname(__FILE__), "/../../lib/ftk_file")
 require File.join(File.dirname(__FILE__), "/../../lib/ftk_processor")
 require File.join(File.dirname(__FILE__), "/../../lib/hypatia_file_object_assembler")
 require File.join(File.dirname(__FILE__), "/../../lib/hypatia_collection_object_assembler")
+require File.join(File.dirname(__FILE__), "/../../lib/hypatia_collection")
+
 require File.join(File.dirname(__FILE__), "/../factories/ftk_files.rb")
 
 require 'rubygems'
@@ -35,7 +37,7 @@ describe HypatiaCollectionObjectAssembler do
       @h.fedora_config.should eql(@test_fedora_config)
     end
     it "has a collection level object" do
-      @h.collection.should be_instance_of(ActiveFedora::Base)
+      @h.collection.should be_instance_of(HypatiaCollection)
     end
   end
 
