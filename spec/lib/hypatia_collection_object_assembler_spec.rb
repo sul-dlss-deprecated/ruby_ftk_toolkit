@@ -17,13 +17,12 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe HypatiaCollectionObjectAssembler do
   before(:each) do
     @test_fedora_config = File.join(File.dirname(__FILE__), "/../config/fedora.yml")
-    @test_fedora = "http://localhost:8983/fedora_url"
-    @ead_file = File.join(File.dirname(__FILE__), "/../fixtures/Gould_EAD.xml")
+    @ead_file = File.join(File.dirname(__FILE__), "/../fixtures/Xanadu_EAD.xml")
     ENV['environment'] = 'test'
     @h = HypatiaCollectionObjectAssembler.new(:ead => @ead_file, :fedora_config => @test_fedora_config)
     
   end
-  context "basic behavior" do
+  context "EAD processing" do
     it "can be instantiated" do
       @h.class.should eql(HypatiaCollectionObjectAssembler)
     end
@@ -38,6 +37,13 @@ describe HypatiaCollectionObjectAssembler do
     end
     it "has a collection level object" do
       @h.collection.should be_instance_of(HypatiaCollection)
+    end
+    it "creates a descMetadata file" do
+      doc = Nokogiri::XML(@h.buildDescMetadata)
+      doc.xpath("/mods:mods/mods:titleInfo/mods:title/text()").to_s.should eql("Keith Henson. Papers relating to Project Xanadu, XOC and Eric Drexler")
+      # doc.xpath("/mods:mods/mods:typeOfResource/text()").to_s.should eql(@ff.type)
+      # doc.xpath("/mods:mods/mods:physicalDescription/mods:form/text()").to_s.should eql(@ff.medium)
+      
     end
   end
 
